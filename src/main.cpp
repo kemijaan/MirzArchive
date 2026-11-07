@@ -1,5 +1,8 @@
-#include <QApplication>
 #include "MainWindow.h"
+#include "FileManager.h"
+
+#include <iostream>
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {

@@ -5,6 +5,8 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QStatusBar>
+#include <QListWidget>
+#include <QFileInfo>
 
 MainWindow::MainWindow()
 {
@@ -12,6 +14,7 @@ MainWindow::MainWindow()
     resize(1000, 650);
 
     setupMenu();
+    setupFileView();
 }
 
 void MainWindow::setupMenu()
@@ -27,7 +30,8 @@ void MainWindow::setupMenu()
         return;
     }
 
-    statusBar()->showMessage(QString("Yo! You picked this archive %1").arg(filePath));
+    fileList->clear();
+    fileList->addItem(QFileInfo(filePath).fileName());
     });
 
     //Seperator
@@ -38,4 +42,10 @@ void MainWindow::setupMenu()
     fileMenu->addAction(exitAction);
     connect(exitAction, &QAction::triggered,
         qApp, &QApplication::quit);
+}
+
+void MainWindow::setupFileView()
+{
+    fileList = new QListWidget(this);
+    setCentralWidget(fileList);
 }
