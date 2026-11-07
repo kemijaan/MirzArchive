@@ -11,6 +11,9 @@ qt_standard_project_setup()
 
 qt_add_executable(MirzArchive
     src/main.cpp
+    src/MainWindow.cpp
 )
+
+target_include_directories(MirzArchive PRIVATE include)
 
 target_link_libraries(MirzArchive PRIVATE Qt6::Widgets)
