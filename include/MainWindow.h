@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <FileManager.h>
-#include <QListWidget>
+#include <QTreeWidget>
+#include <QString>
 
 class MainWindow : public QMainWindow
 {
@@ -13,8 +14,12 @@ public:
 private:
     void setupMenu();
     void setupFileView();
+    void setupConnections();
+    bool validateArchive(const QString& filePath);
+
     FileManager fileManager;
-    QListWidget* fileList;
+    QTreeWidget* fileList;
+    QString currentArchivePath;
 };
 
 #endif

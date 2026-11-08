@@ -13,6 +13,7 @@ qt_add_executable(MirzArchive
     src/main.cpp
     src/MainWindow.cpp
     src/FileManager.cpp
+    src/ArchiveValidator.cpp
 )
 
 target_include_directories(MirzArchive PRIVATE include)
