@@ -20,6 +20,7 @@ private:
     FileManager fileManager;
     QTreeWidget* fileList;
     QString currentArchivePath;
+    QLineEdit* navigationBar;
 };
 
 #endif
