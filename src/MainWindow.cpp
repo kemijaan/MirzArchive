@@ -110,6 +110,9 @@ void MainWindow::setupMenu()
                 item->setText(2, QString::fromStdString(entry.path().extension().string()));
             }
 
+            QFileInfo fileInfo(QString::fromStdWString(entry.path().wstring()));
+            item->setText(3, fileInfo.lastModified().toString("dd/MM/yyyy hh:mm"));
+
             fileList->addTopLevelItem(item);
         }
     });
@@ -165,7 +168,10 @@ void MainWindow::setupMenu()
                 item->setText(1, QString::number(entry.file_size()) + " bytes");
                 item->setText(2, QString::fromStdWString(entry.path().extension().wstring()));
             }
-
+            
+            QFileInfo fileInfo(QString::fromStdWString(entry.path().wstring()));
+            item->setText(3, fileInfo.lastModified().toString("dd/MM/yyyy hh:mm"));
+            
             fileList->addTopLevelItem(item);
         }
     });
@@ -231,6 +237,9 @@ void MainWindow::setupConnections()
                 newItem->setText(2, QString::fromStdWString(entry.path().extension().wstring()));
             }
 
+            QFileInfo fileInfo(QString::fromStdWString(entry.path().wstring()));
+            newItem->setText(3, fileInfo.lastModified().toString("dd/MM/yyyy hh:mm"));
+            
             fileList->addTopLevelItem(newItem);
         }
 
