@@ -14,6 +14,28 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QDateTime>
+
+bool FileTreeItem::operator<(const QTreeWidgetItem& other) const
+{
+    int column = treeWidget()->sortColumn();
+
+    if (column == 1) {
+        qulonglong thisSize = data(1, Qt::UserRole).toULongLong();
+        qulonglong otherSize = other.data(1, Qt::UserRole).toULongLong();
+
+        return thisSize < otherSize;
+    }
+
+    if (column == 3) {
+        QDateTime thisDate = data(3, Qt::UserRole).toDateTime();
+        QDateTime otherDate = other.data(3, Qt::UserRole).toDateTime();
+
+        return thisDate < otherDate;
+    }
+
+    return QTreeWidgetItem::operator<(other);
+}
 
 MainWindow::MainWindow()
 {
@@ -95,7 +117,7 @@ void MainWindow::setupMenu()
         fileList->clear();
 
         for (const auto& entry : entries) {
-            QTreeWidgetItem* item = new QTreeWidgetItem();
+            FileTreeItem* item = new FileTreeItem();
 
             QString name = QString::fromStdString(entry.path().filename().string());
 
@@ -108,10 +130,12 @@ void MainWindow::setupMenu()
             else {
                 item->setText(1, QString::number(entry.file_size()) + " bytes");
                 item->setText(2, QString::fromStdString(entry.path().extension().string()));
+                item->setData(1, Qt::UserRole, static_cast<qulonglong>(entry.file_size()));
             }
 
             QFileInfo fileInfo(QString::fromStdWString(entry.path().wstring()));
             item->setText(3, fileInfo.lastModified().toString("dd/MM/yyyy hh:mm"));
+            item->setData(3, Qt::UserRole, fileInfo.lastModified());
 
             fileList->addTopLevelItem(item);
         }
@@ -154,7 +178,7 @@ void MainWindow::setupMenu()
         navigationBar->setText(QString::fromStdWString(parentPath.wstring()));
 
         for(const auto& entry : entries){
-            QTreeWidgetItem* item = new QTreeWidgetItem();
+            FileTreeItem* item = new FileTreeItem();
 
             QString name = QString::fromStdWString(entry.path().filename().wstring());
             item->setText(0, name);
@@ -167,11 +191,12 @@ void MainWindow::setupMenu()
             else{
                 item->setText(1, QString::number(entry.file_size()) + " bytes");
                 item->setText(2, QString::fromStdWString(entry.path().extension().wstring()));
+                item->setData(1, Qt::UserRole, static_cast<qulonglong>(entry.file_size()));
             }
             
             QFileInfo fileInfo(QString::fromStdWString(entry.path().wstring()));
             item->setText(3, fileInfo.lastModified().toString("dd/MM/yyyy hh:mm"));
-            
+
             fileList->addTopLevelItem(item);
         }
     });
@@ -183,6 +208,7 @@ void MainWindow::setupFileView()
 
     fileList->setColumnCount(4);
     fileList->setHeaderLabels({"Name", "Size", "Type", "Date Modified"});
+    fileList->setSortingEnabled(true);
 
     navigationBar = new QLineEdit(this);
     navigationBar->setPlaceholderText("Current archive location...");
@@ -222,7 +248,7 @@ void MainWindow::setupConnections()
         navigationBar->setText(QString::fromStdWString(fullPath.wstring()));
 
         for (const auto& entry : entries){
-            QTreeWidgetItem* newItem = new QTreeWidgetItem();
+            FileTreeItem* newItem = new FileTreeItem();
 
             QString name = QString::fromStdWString(entry.path().filename().wstring());
             newItem->setText(0, name);
@@ -235,6 +261,7 @@ void MainWindow::setupConnections()
             else{
                 newItem->setText(1, QString::number(entry.file_size()) + " bytes");
                 newItem->setText(2, QString::fromStdWString(entry.path().extension().wstring()));
+                newItem->setData(1, Qt::UserRole, static_cast<qulonglong>(entry.file_size()));
             }
 
             QFileInfo fileInfo(QString::fromStdWString(entry.path().wstring()));

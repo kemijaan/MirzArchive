@@ -6,6 +6,12 @@
 #include <QTreeWidget>
 #include <QString>
 
+class FileTreeItem : public QTreeWidgetItem
+{
+public:
+    bool operator<(const QTreeWidgetItem& other) const override;
+};
+
 class MainWindow : public QMainWindow
 {
 public:
