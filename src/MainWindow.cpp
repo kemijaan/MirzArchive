@@ -15,6 +15,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QDateTime>
+#include <QDebug>
 
 bool FileTreeItem::operator<(const QTreeWidgetItem& other) const
 {
@@ -205,6 +206,7 @@ void MainWindow::setupMenu()
 void MainWindow::setupFileView()
 {
     fileList = new QTreeWidget(this);
+    fileList->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     fileList->setColumnCount(4);
     fileList->setHeaderLabels({"Name", "Size", "Type", "Date Modified"});
@@ -232,6 +234,19 @@ void MainWindow::setupConnections()
     connect(fileList, &QTreeWidget::itemClicked, this, [this]() {
         statusBar()->showMessage(currentArchivePath);
     });
+    
+    connect(fileList, &QTreeWidget::itemSelectionChanged, this,[this]() {
+        QList<QTreeWidgetItem*> selected = fileList->selectedItems();
+
+        for(QTreeWidgetItem* item : selected){
+            qDebug() << item->text(0);
+        }
+
+        statusBar()->showMessage(
+            QString::number(selected.size()) + "item(s) selected"
+        );
+    });
+
     connect(fileList, &QTreeWidget::itemDoubleClicked, this, [this](QTreeWidgetItem* item, int column) {
         QString currentPath = navigationBar->text();
         QString selectedName = item->text(0);
